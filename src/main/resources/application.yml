@@ -13,3 +13,11 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+app:
+  admin:
+    username: ${ADMIN_USERNAME:admin}
+    password: ${ADMIN_PASSWORD:}
+  jwt:
+    secret: ${JWT_SECRET:}
+    expire-hours: ${JWT_EXPIRE_HOURS:24}

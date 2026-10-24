@@ -5,9 +5,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -24,6 +26,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(Result.error(40001, "参数错误: " + e.getName()));
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Result<Void>> handleNotReadable(HttpMessageNotReadableException e) {
+        return ResponseEntity.badRequest().body(Result.error(40001, "请求体格式错误"));
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Result<Void>> handleNotFound(NoResourceFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Result.error(40401, "资源不存在"));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Result<Void>> handleOther(Exception e) {
         log.error("Unexpected error", e);
@@ -33,6 +45,8 @@ public class GlobalExceptionHandler {
     private HttpStatus toHttpStatus(int code) {
         return switch (code) {
             case 40001 -> HttpStatus.BAD_REQUEST;
+            case 40100, 40101 -> HttpStatus.UNAUTHORIZED;
+            case 40300 -> HttpStatus.FORBIDDEN;
             case 40401 -> HttpStatus.NOT_FOUND;
             default -> HttpStatus.OK;
         };
