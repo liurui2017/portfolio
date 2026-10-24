@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: portfolioshowcase
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:8.130.85.112}:${DB_PORT:5432}/${DB_NAME:postgres}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
