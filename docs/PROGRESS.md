@@ -24,10 +24,10 @@
 | 4 | 后台管理接口 + 上传（契约先行） | ✅ 已完成 | CRUD/上传/站点已实测 |
 | 5 | 展示端前端 | ✅ 已完成 | 构建+联调通过 |
 | 6 | 后台管理前端 | ✅ 已完成 | 构建+联调通过 |
-| 7 | Docker 部署 | ⬜ 未开始 | |
+| 7 | Docker 部署 | ✅ 已完成 | 文件已写，待装 Docker 后 compose up 验证 |
 
 ## 下一步
-- [ ] 批次 7：Docker 部署（Dockerfile + docker-compose + Nginx）
+- [ ] 装好 Docker 后执行 `docker compose up -d --build`，访问：展示端 :8082 / 后台 :8083 / 后端 Swagger :8081
 - [ ] （可选）用户执行 `sql/002_seed_demo.sql` 插入演示数据
 
 ## 本地运行命令

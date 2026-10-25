@@ -1,0 +1,10 @@
+.git
+.idea
+target
+uploads
+.env
+frontend/node_modules
+frontend/dist
+admin/node_modules
+admin/dist
+*.log

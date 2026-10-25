@@ -1,0 +1,49 @@
+services:
+  backend:
+    build: .
+    container_name: portfolio-backend
+    restart: unless-stopped
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      UPLOAD_DIR: /app/uploads
+    ports:
+      - "${BACKEND_PORT:-8081}:8080"
+    volumes:
+      - uploads-data:/app/uploads
+    networks:
+      - portfolio-net
+
+  showcase:
+    build: ./frontend
+    container_name: portfolio-showcase
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${SHOWCASE_PORT:-8082}:80"
+    networks:
+      - portfolio-net
+
+  admin:
+    build: ./admin
+    container_name: portfolio-admin
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${ADMIN_PORT:-8083}:80"
+    networks:
+      - portfolio-net
+
+volumes:
+  uploads-data:
+
+networks:
+  portfolio-net:
