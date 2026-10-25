@@ -18,4 +18,8 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
             group by t
             """)
     List<Object[]> countPublishedWorks(@Param("status") WorkStatus status);
+
+    boolean existsBySlug(String slug);
+
+    boolean existsBySlugAndIdNot(String slug, Long id);
 }

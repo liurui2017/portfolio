@@ -21,6 +21,7 @@
 | 40101 | 未登录或 token 无效 |
 | 40300 | 无权限 |
 | 40401 | 资源不存在 |
+| 40900 | 资源冲突（如 slug 已存在） |
 | 50000 | 服务器内部错误 |
 
 ### 分页格式
@@ -150,4 +151,92 @@ Query 参数：
 
 ## 后台管理接口
 
-### /api/admin/** —— 待补充（批次 4）
+> 全部需要 `Authorization: Bearer <token>`，无 token 返回 401（`code=40101`）。
+
+### 作品
+
+#### GET /api/admin/works
+后台作品列表（含 DRAFT），分页+筛选（参数同公开列表，另加 `status`）。
+
+响应 `data`（分页）：
+```json
+{
+  "items": [
+    {
+      "id": 1, "type": "CODE", "title": "标题", "slug": "my-slug",
+      "status": "DRAFT", "featured": false, "sortOrder": 0,
+      "category": { "id": 1, "name": "代码", "slug": "code" },
+      "updatedAt": "2026-10-24T12:00:00"
+    }
+  ],
+  "page": 1, "size": 12, "total": 25, "totalPages": 3
+}
+```
+
+#### GET /api/admin/works/{id}
+后台作品详情（含 DRAFT），用于编辑回显。
+
+响应 `data`：
+```json
+{
+  "id": 1, "type": "CODE", "title": "标题", "slug": "my-slug",
+  "summary": "...", "content": "# Markdown",
+  "coverUrl": "...", "projectUrl": "...", "videoUrl": "...",
+  "categoryId": 1, "tagIds": [1, 2],
+  "status": "DRAFT", "sortOrder": 0, "featured": false,
+  "createdAt": "...", "updatedAt": "..."
+}
+```
+
+#### POST /api/admin/works —— 新建
+#### PUT /api/admin/works/{id} —— 更新
+请求体（新建/更新一致）：
+```json
+{
+  "type": "CODE",
+  "title": "标题",
+  "slug": "my-slug",
+  "summary": "简介",
+  "content": "# Markdown",
+  "coverUrl": "/uploads/x.jpg",
+  "projectUrl": "https://github.com/xxx",
+  "videoUrl": "/uploads/x.mp4",
+  "categoryId": 1,
+  "tagIds": [1, 2],
+  "status": "DRAFT",
+  "sortOrder": 0,
+  "featured": false
+}
+```
+- `type`、`title`、`slug` 必填；slug 唯一，重复返回 409（`code=40900`）。
+- 成功返回该作品完整详情（同 `GET /api/admin/works/{id}`）。
+
+#### DELETE /api/admin/works/{id} —— 删除（成功 `code=0`）
+
+#### PATCH /api/admin/works/{id}/status —— 发布/下架
+请求体：`{ "status": "PUBLISHED" }`
+
+#### PATCH /api/admin/works/{id}/sort —— 排序/置顶
+请求体：`{ "sortOrder": 3, "featured": true }`（两个字段均可选）
+
+### 分类
+- POST /api/admin/categories 请求体 `{ "name": "代码", "slug": "code", "sortOrder": 0 }`
+- PUT /api/admin/categories/{id} 同上
+- DELETE /api/admin/categories/{id}（有关联作品时其 category 置空）
+- 列表复用公开 `GET /api/categories`
+
+### 标签
+- POST /api/admin/tags 请求体 `{ "name": "Java", "slug": "java" }`
+- PUT /api/admin/tags/{id} 同上
+- DELETE /api/admin/tags/{id}
+- 列表复用公开 `GET /api/tags`
+
+### 站点信息
+- GET /api/admin/site → 同公开 `SiteInfoResponse`
+- PUT /api/admin/site 请求体 `{ "title": "...", "about": "...", "avatarUrl": "...", "github": "...", "email": "..." }`（整体覆盖）
+
+### 文件上传
+- POST /api/admin/upload，`multipart/form-data`，文件字段名 `file`
+- 限制：图片(jpg/jpeg/png/webp/gif)与视频(mp4/webm/mov)，单文件 ≤200MB
+- 响应 `data`：`{ "url": "/uploads/abc123.jpg" }`（前端把 url 填入作品的 coverUrl/videoUrl）
+- 公开访问：`GET /uploads/{filename}`

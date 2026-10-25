@@ -10,4 +10,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 public interface WorkRepository extends JpaRepository<Work, Long>, JpaSpecificationExecutor<Work> {
 
     Optional<Work> findBySlugAndStatus(String slug, WorkStatus status);
+
+    boolean existsBySlug(String slug);
+
+    boolean existsBySlugAndIdNot(String slug, Long id);
 }

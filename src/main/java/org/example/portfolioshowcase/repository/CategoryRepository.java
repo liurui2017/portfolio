@@ -18,4 +18,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             group by c
             """)
     List<Object[]> countPublishedWorks(@Param("status") WorkStatus status);
+
+    boolean existsBySlug(String slug);
+
+    boolean existsBySlugAndIdNot(String slug, Long id);
 }
