@@ -2,6 +2,15 @@
 
 > 每次开发先看「下一步」，每批完成后更新本文件。
 
+## 如何继续（跨会话交接）
+
+新窗口 / 新会话从这一节读起即可，不用翻对话记录。
+
+- **当前状态**：7 个批次全部完成并推送到 GitHub（`https://github.com/liurui2017/portfolio`）；后端 + 展示端 + 后台 + Docker 文件都已就绪。
+- **从哪里开始**：看下方「下一步」清单；新增需求按「工作约定」走。
+- **关键约定**：契约先行（先改 `docs/api-contract.md` 并确认，再写代码）；数据库不自动建表（只在 `sql/` 写脚本、由用户手动执行）；敏感配置在 `.env`（gitignored），后端启动时自动加载。
+- **关键文件**：进度=本文件；契约=`docs/api-contract.md`；建表/数据=`sql/`；后端配置=`src/main/resources/application.yml` + `.env`；展示端=`frontend/`；后台=`admin/`。
+
 ## 项目概览
 - 目标：作品展示前端 + 后台管理系统
 - 后端：Spring Boot 4.1.2 (Java 17) + Spring Data JPA + PostgreSQL + Spring Security(JWT)
@@ -12,7 +21,7 @@
 ## 工作约定
 1. 契约先行：确认需求 → 写 `docs/api-contract.md` → 后端 → 前端 → 联调
 2. 数据库手动管理：建表/改字段由 `sql/` 脚本交付，用户手动执行
-3. 敏感配置放 `.env`（gitignored）；本地开发先 `source .env` 再启动
+3. 敏感配置放 `.env`（gitignored），后端启动时自动加载（无需 source）
 
 ## 批次进度
 
