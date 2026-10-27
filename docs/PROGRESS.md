@@ -32,7 +32,6 @@
 
 ## 本地运行命令
 ```bash
-# 加载 .env（DB 密码等）后用 JDK17 启动
-set -a; source .env; set +a
+# .env 会自动加载，无需手动 source；指定 JDK17 启动
 JAVA_HOME=~/devResource/jdk-17/Contents/Home ./mvnw spring-boot:run
 ```
